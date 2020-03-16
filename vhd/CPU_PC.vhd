@@ -130,7 +130,7 @@ begin
                 cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
                 cmd.PC_sel <= PC_from_pc;
                 cmd.PC_we <= '1';
-                state_d <= S_addi1;
+                state_d <= S_addi;
               else
                 state_d <= S_Error;
               end if;
