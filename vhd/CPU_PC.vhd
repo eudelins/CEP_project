@@ -27,7 +27,9 @@ architecture RTL of CPU_PC is
         S_Init,
         S_Pre_Fetch,
         S_Fetch,
-        S_Decode
+        S_Decode,
+        S_LUI,
+        S_addi
     );
 
     signal state_d, state_q : State_type;
@@ -50,7 +52,7 @@ begin
     begin
 
         -- Valeurs par défaut de cmd à définir selon les préférences de chacun
-        cmd.rst               <= 'U';
+        cmd.rst               <= '0';
         cmd.ALU_op            <= UNDEFINED;
         cmd.LOGICAL_op        <= UNDEFINED;
         cmd.ALU_Y_sel         <= UNDEFINED;
@@ -58,27 +60,27 @@ begin
         cmd.SHIFTER_op        <= UNDEFINED;
         cmd.SHIFTER_Y_sel     <= UNDEFINED;
 
-        cmd.RF_we             <= 'U';
-        cmd.RF_SIZE_sel       <= UNDEFINED;
-        cmd.RF_SIGN_enable    <= 'U';
-        cmd.DATA_sel          <= UNDEFINED;
+        cmd.RF_we             <= '0';
+        cmd.RF_SIZE_sel       <= RF_SIZE_word;
+        cmd.RF_SIGN_enable    <= '0';
+        cmd.DATA_sel          <= DATA_from_pc;
 
-        cmd.PC_we             <= 'U';
-        cmd.PC_sel            <= UNDEFINED;
+        cmd.PC_we             <= '0';
+        cmd.PC_sel            <= PC_from_pc;
 
-        cmd.PC_X_sel          <= UNDEFINED;
-        cmd.PC_Y_sel          <= UNDEFINED;
+        cmd.PC_X_sel          <= PC_X_pc;
+        cmd.PC_Y_sel          <= PC_Y_immU;
 
         cmd.TO_PC_Y_sel       <= UNDEFINED;
 
-        cmd.AD_we             <= 'U';
+        cmd.AD_we             <= '0';
         cmd.AD_Y_sel          <= UNDEFINED;
 
-        cmd.IR_we             <= 'U';
+        cmd.IR_we             <= '0';
 
         cmd.ADDR_sel          <= UNDEFINED;
-        cmd.mem_we            <= 'U';
-        cmd.mem_ce            <= 'U';
+        cmd.mem_we            <= '0';
+        cmd.mem_ce            <= '0';
 
         cmd.cs.CSR_we            <= UNDEFINED;
 
@@ -118,15 +120,50 @@ begin
                 state_d <= S_Decode;
 
             when S_Decode =>
-
+              -- PC <- PC + 4
+              if IR(6 downto 0) = '0110111' then
+                cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+                cmd.PC_sel <= PC_from_pc;
+                cmd.PC_we <= '1';
+                state_d <= S_LUI;
+              else if IR(6 downto 0) = '0010011' then
+                cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+                cmd.PC_sel <= PC_from_pc;
+                cmd.PC_we <= '1';
+                state_d <= S_addi1;
+              else
                 state_d <= S_Error;
+              end if;
+              
 
                 -- Décodage effectif des instructions,
                 -- à compléter par vos soins
 
 ---------- Instructions avec immediat de type U ----------
 
+              when S_LUI =>
+              -- rd <- ImmU + 0
+              cmd.PC_X_sel <= PC_X_cst_x00;
+              cmd.PC_Y_sel <= PC_Y_immU;
+              cmd.RF_we <= ’1’;
+              cmd.DATA_sel <= DATA_from_pc;
+              -- lecture mem[PC]
+              cmd.ADDR_sel <= ADDR_from_pc;
+              cmd.mem_ce <= ’1’;
+              cmd.mem_we <= ’0’;
+              -- next state
+              state_d <= S_Fetch;
+
 ---------- Instructions arithmétiques et logiques ----------
+
+              when S_addi =>
+              -- mem_addr <- rs1 + ImmI
+              cmd.ALU_Y_sel <= ALU_Y_immI;
+              ALU_op = ALU_plus;
+              DATA_sel = ADDR_from_alu;
+              RF_we <= '1';
+              -- next state
+              state_d = S_Fetch;
 
 ---------- Instructions de saut ----------
 
@@ -136,6 +173,14 @@ begin
 
 ---------- Instructions d'accès aux CSR ----------
 
+          
+
+          
+
+          
+              
+
+              
             when others => null;
         end case;
 
