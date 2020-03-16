@@ -96,44 +96,44 @@ begin
         state_d <= state_q;
 
         case state_q is
-            when S_Error =>
-                -- Etat transitoire en cas d'instruction non reconnue 
-                -- Aucune action
-                state_d <= S_Init;
+          when S_Error =>
+            -- Etat transitoire en cas d'instruction non reconnue 
+            -- Aucune action
+            state_d <= S_Init;
 
-            when S_Init =>
-                -- PC <- RESET_VECTOR
-                cmd.PC_we <= '1';
-                cmd.PC_sel <= PC_rstvec;
-                state_d <= S_Pre_Fetch;
+          when S_Init =>
+            -- PC <- RESET_VECTOR
+            cmd.PC_we <= '1';
+            cmd.PC_sel <= PC_rstvec;
+            state_d <= S_Pre_Fetch;
 
-            when S_Pre_Fetch =>
-                -- mem[PC]
-                cmd.mem_we   <= '0';
-                cmd.mem_ce   <= '1';
-                cmd.ADDR_sel <= ADDR_from_pc;
-                state_d      <= S_Fetch;
+          when S_Pre_Fetch =>
+            -- mem[PC]
+            cmd.mem_we   <= '0';
+            cmd.mem_ce   <= '1';
+            cmd.ADDR_sel <= ADDR_from_pc;
+            state_d      <= S_Fetch;
 
-            when S_Fetch =>
-                -- IR <- mem_datain
-                cmd.IR_we <= '1';
-                state_d <= S_Decode;
+          when S_Fetch =>
+            -- IR <- mem_datain
+            cmd.IR_we <= '1';
+            state_d <= S_Decode;
 
-            when S_Decode =>
-              -- PC <- PC + 4
-              if status.IR(6 downto 0) = "0110111" then
-                cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
-                cmd.PC_sel <= PC_from_pc;
-                cmd.PC_we <= '1';
-                state_d <= S_LUI;
-              else if status.IR(6 downto 0) = "0010011" then
-                     cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
-                     cmd.PC_sel <= PC_from_pc;
-                     cmd.PC_we <= '1';
-                     state_d <= S_ADDI;
-                   else
-                     state_d <= S_Error;
-                   end if;
+          when S_Decode =>
+            -- PC <- PC + 4
+            if status.IR(6 downto 0) = "0110111" then
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_LUI;
+            else if status.IR(6 downto 0) = "0010011" then
+                   cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+                   cmd.PC_sel <= PC_from_pc;
+                   cmd.PC_we <= '1';
+                   state_d <= S_ADDI;
+                 else
+                   state_d <= S_Error;
+                 end if;
               
 
                 -- Décodage effectif des instructions,
@@ -142,28 +142,28 @@ begin
 ---------- Instructions avec immediat de type U ----------
 
               when S_LUI =>
-                   -- rd <- ImmU + 0
-                   cmd.PC_X_sel <= PC_X_cst_x00;
-                   cmd.PC_Y_sel <= PC_Y_immU;
-                   cmd.RF_we <= '1';
-                   cmd.DATA_sel <= DATA_from_pc;
-                   -- lecture mem[PC]
-                   cmd.ADDR_sel <= ADDR_from_pc;
-                   cmd.mem_ce <= '1';
-                   cmd.mem_we <= '0';
-                   -- next state
-                   state_d <= S_Fetch;
+                 -- rd <- ImmU + 0
+                 cmd.PC_X_sel <= PC_X_cst_x00;
+                 cmd.PC_Y_sel <= PC_Y_immU;
+                 cmd.RF_we <= '1';
+                 cmd.DATA_sel <= DATA_from_pc;
+                 -- lecture mem[PC]
+                 cmd.ADDR_sel <= ADDR_from_pc;
+                 cmd.mem_ce <= '1';
+                 cmd.mem_we <= '0';
+                 -- next state
+                 state_d <= S_Fetch;
 
 ---------- Instructions arithmétiques et logiques ----------
 
               when S_ADDI =>
-                   -- mem_addr <- rs1 + ImmI
-                   cmd.ALU_Y_sel <= ALU_Y_immI;
-                   cmd.ALU_op <= ALU_plus;
-                   cmd.DATA_sel <= DATA_from_alu;
-                   cmd.RF_we <= '1';
-                   -- next state
-                   state_d <= S_Fetch;
+                 -- mem_addr <- rs1 + ImmI
+                 cmd.ALU_Y_sel <= ALU_Y_immI;
+                 cmd.ALU_op <= ALU_plus;
+                 cmd.DATA_sel <= DATA_from_alu;
+                 cmd.RF_we <= '1';
+                 -- next state
+                 state_d <= S_Fetch;
 
 ---------- Instructions de saut ----------
 
@@ -181,9 +181,9 @@ begin
               
 
               
-                when others => null;
-        end case;
+              when others => null;
+            end case;
 
-    end process FSM_comb;
+        end process FSM_comb;
 
 end architecture;
