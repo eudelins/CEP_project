@@ -121,12 +121,12 @@ begin
 
             when S_Decode =>
               -- PC <- PC + 4
-              if IR(6 downto 0) = '0110111' then
+              if IR(6 downto 0) = "0110111" then
                 cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
                 cmd.PC_sel <= PC_from_pc;
                 cmd.PC_we <= '1';
                 state_d <= S_LUI;
-              else if IR(6 downto 0) = '0010011' then
+              else if IR(6 downto 0) = "0010011" then
                 cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
                 cmd.PC_sel <= PC_from_pc;
                 cmd.PC_we <= '1';
@@ -145,12 +145,12 @@ begin
               -- rd <- ImmU + 0
               cmd.PC_X_sel <= PC_X_cst_x00;
               cmd.PC_Y_sel <= PC_Y_immU;
-              cmd.RF_we <= ’1’;
+              cmd.RF_we <= '1';
               cmd.DATA_sel <= DATA_from_pc;
               -- lecture mem[PC]
               cmd.ADDR_sel <= ADDR_from_pc;
-              cmd.mem_ce <= ’1’;
-              cmd.mem_we <= ’0’;
+              cmd.mem_ce <= '1';
+              cmd.mem_we <= '0';
               -- next state
               state_d <= S_Fetch;
 
@@ -159,11 +159,11 @@ begin
               when S_ADDI =>
               -- mem_addr <- rs1 + ImmI
               cmd.ALU_Y_sel <= ALU_Y_immI;
-              ALU_op = ALU_plus;
-              DATA_sel = ADDR_from_alu;
+              ALU_op <= ALU_plus;
+              DATA_sel <= ADDR_from_alu;
               RF_we <= '1';
               -- next state
-              state_d = S_Fetch;
+              state_d <= S_Fetch;
 
 ---------- Instructions de saut ----------
 
