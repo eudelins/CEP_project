@@ -23,13 +23,13 @@ end entity;
 
 architecture RTL of CPU_PC is
     type State_type is (
-        S_Error,
-        S_Init,
-        S_Pre_Fetch,
-        S_Fetch,
-        S_Decode,
-        S_LUI,
-        S_ADDI
+      S_Error,
+      S_Decode,
+      S_LUI,
+      S_ADDI
+      S_Init,
+      S_Pre_Fetch,
+      S_Fetch
     );
 
     signal state_d, state_q : State_type;
