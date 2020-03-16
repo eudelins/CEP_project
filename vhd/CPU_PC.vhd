@@ -26,7 +26,7 @@ architecture RTL of CPU_PC is
       S_Error,
       S_Decode,
       S_LUI,
-      S_ADDI
+      S_ADDI,
       S_Init,
       S_Pre_Fetch,
       S_Fetch
