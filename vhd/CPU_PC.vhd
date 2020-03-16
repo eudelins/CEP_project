@@ -29,7 +29,7 @@ architecture RTL of CPU_PC is
         S_Fetch,
         S_Decode,
         S_LUI,
-        S_addi
+        S_ADDI
     );
 
     signal state_d, state_q : State_type;
@@ -130,7 +130,7 @@ begin
                 cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
                 cmd.PC_sel <= PC_from_pc;
                 cmd.PC_we <= '1';
-                state_d <= S_addi;
+                state_d <= S_ADDI;
               else
                 state_d <= S_Error;
               end if;
@@ -156,7 +156,7 @@ begin
 
 ---------- Instructions arithmétiques et logiques ----------
 
-              when S_addi =>
+              when S_ADDI =>
               -- mem_addr <- rs1 + ImmI
               cmd.ALU_Y_sel <= ALU_Y_immI;
               ALU_op = ALU_plus;
