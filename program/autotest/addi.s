@@ -15,5 +15,5 @@
 	# pout_start
 	# 00000000
 	# 000003C1
-	# FFFF8000
+	# FFFFF800
 	# pout_end
