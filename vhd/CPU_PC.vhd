@@ -167,7 +167,7 @@ begin
             state_d <= S_Fetch;
 
 
-          when AUIPC =>
+          when S_AUIPC =>
             -- rd ImmU + pc
             cmd.PC_X_sel <= PC_X_pc;
             cmd.PC_Y_sel <= PC_Y_immU;
