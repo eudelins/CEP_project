@@ -1,4 +1,4 @@
-# TAG = addi
+# TAG = add
 	.text
 
   # le registre x0 contient toujours 0
