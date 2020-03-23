@@ -215,9 +215,9 @@ begin
           when S_SLL =>
             -- rd <- rs1 << rs2(0:4)
             cmd.SHIFTER_Y_sel <= SHIFTER_Y_rs2;
-            cmd.SHIFTER_op <= SHIFT_11;
-            cmd.DATA_sel <= DATA_form_shifter;
-            cmd.RF_WE = '1';
+            cmd.SHIFTER_op <= SHIFT_ll;
+            cmd.DATA_sel <= DATA_from_shifter;
+            cmd.RF_we <= '1';
             -- lecture mem[PC]
             cmd.ADDR_sel <= ADDR_from_pc;
             cmd.mem_ce <= '1';
