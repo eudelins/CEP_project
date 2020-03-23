@@ -5,9 +5,9 @@
   # syntaxe: addi rd, rs1, imm
   # imm est codé sur 11 bits et est donc ompris entre -2048 et 2047
 
-  addi x31, x0, x0    # test: stock 0 dans le registre 31
+  add x31, x0, x0    # test: stock 0 dans le registre 31
   lui x5, 0xfffff
-  addi x31, x0, x5  # test: 0 + un nb quelconque
+  add x31, x0, x5  # test: 0 + un nb quelconque
 
 
 	# max_cycle 50
