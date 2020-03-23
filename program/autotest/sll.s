@@ -22,10 +22,9 @@
 	sll x31, x1, x2								# test: stock x0 décalé de 8 bits vers la gauche dans le registre 31
 																		# les 8 bits de poids faibles étants remplacés par des 0
 
-	# addi x1, x0, -393 						# chargement constante aléatoire négative
-	# addi x2, x0, 22								# chargement constante
-	# sll x31, x1, x2								# test: idem pour un décalage de 22 bits
-	# FFFFFE77
+	addi x1, x0, -393 						# chargement constante aléatoire négative
+	addi x2, x0, 22								# chargement constante
+	sll x31, x1, x2								# test: idem pour un décalage de 22 bits
 
 
 	# max_cycle 50
@@ -35,4 +34,5 @@
 	# 00000000
 	# 0000000A
 	# 0007FD00
+	# 9DC00000
 	# pout_end
