@@ -30,8 +30,7 @@ architecture RTL of CPU_PC is
       S_Init,
       S_Pre_Fetch,
       S_Fetch,
-      S_ADD,
-      S_AUIPC
+      S_ADD
     );
 
     signal state_d, state_q : State_type;
@@ -99,7 +98,7 @@ begin
 
         case state_q is
           when S_Error =>
-            -- Etat transitoire en cas d'instruction non reconnue 
+            -- Etat transitoire en cas d'instruction non reconnue
             -- Aucune action
             state_d <= S_Init;
 
@@ -122,30 +121,26 @@ begin
             state_d <= S_Decode;
 
           when S_Decode =>
+            -- PC <- PC + 4
             if status.IR(6 downto 0) = "0110111" then
-              -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_LUI;
             elsif status.IR(6 downto 0) = "0010011" then
-              -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_ADDI;
             elsif status.IR(6 downto 0) = "0110011" then
-              -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_ADD;
-            elsif status.IR(6 downto 0) = "0010111" then
-              state_d <= S_AUIPC;
             else
               state_d <= S_Error;
             end if;
-              
+
 
                 -- Décodage effectif des instructions,
                 -- à compléter par vos soins
@@ -164,25 +159,6 @@ begin
             cmd.mem_we <= '0';
             -- next state
             state_d <= S_Fetch;
-
-
-          when S_AUIPC =>
-            -- rd ImmU + pc
-            cmd.PC_X_sel <= PC_X_pc;
-            cmd.PC_Y_sel <= PC_Y_immU;
-            cmd.RF_we <= '1';
-            cmd.DATA_sel <= DATA_from_pc;
-            -- PC <- PC + 4
-            cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
-            cmd.PC_sel <= PC_from_pc;
-            cmd.PC_we <= '1';
-             -- lecture mem[PC]
-            cmd.ADDR_sel <= ADDR_from_pc;
-            cmd.mem_ce <= '1';
-            cmd.mem_we <= '0';
-            -- next state
-            state_d <= S_Fetch;
-            
 
 ---------- Instructions arithmétiques et logiques ----------
 
@@ -214,8 +190,7 @@ begin
             state_d <= S_Fetch;
 
 
-            
-          when S_SLL =>
+        when S_SLL =>
             -- rd <- rs1 << rs2(0:4)
             cmd.SHIFTER_Y_sel <= SHIFTER_Y_rs2;
             cmd.SHIFTER_op <= SHIFT_11;
@@ -228,7 +203,6 @@ begin
             -- next state
             state_d <= S_Fetch;
 
-            
 
 ---------- Instructions de saut ----------
 
@@ -238,14 +212,14 @@ begin
 
 ---------- Instructions d'accès aux CSR ----------
 
-          
 
-          
 
-          
-              
 
-              
+
+
+
+
+
           when others => null;
         end case;
 
