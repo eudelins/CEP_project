@@ -170,10 +170,6 @@ begin
             cmd.PC_Y_sel <= PC_Y_immU;
             cmd.RF_we <= '1';
             cmd.DATA_sel <= DATA_from_pc;
-            -- lecture mem[PC]
-            cmd.ADDR_sel <= ADDR_from_pc;
-            cmd.mem_ce <= '1';
-            cmd.mem_we <= '0';
             -- next state
             state_d <= S_Fetch;
             
