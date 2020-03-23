@@ -13,11 +13,9 @@
 
 	addi x1, x0, 1								# chargement constante
 	addi x2, x0, 31								# chargement constante
-	# sll x31, x1, x2								# test: valeur extrême sup de rs2
-	# 00000000
+	sll x31, x1, x2								# test: valeur extrême sup de rs2
 
-	# sll x31, x1, x0								# test: valeur extrême inf de rs2
-	# 00000001
+	sll x31, x1, x0								# test: valeur extrême inf de rs2
 
 	# addi x1, x0, 2045							# chargement constante aléatoire postive
 	# addi x2, x0, 8								# chargement constante
@@ -35,4 +33,6 @@
 	# pout_start
 	# 00000000
 	#	00000000
+	# 00000000
+	# 00000001
 	# pout_end

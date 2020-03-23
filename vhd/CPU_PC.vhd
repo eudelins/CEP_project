@@ -135,7 +135,7 @@ begin
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_ADDI;
-            elsif status.IR(6 downto 0) = "0110011" then
+            elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
@@ -143,6 +143,12 @@ begin
               state_d <= S_ADD;
             elsif status.IR(6 downto 0) = "0010111" then
               state_d <= S_AUIPC;
+            elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "0110011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SLL;
             else
               state_d <= S_Error;
             end if;
