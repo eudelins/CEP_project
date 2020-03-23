@@ -174,8 +174,12 @@ begin
             cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
             cmd.PC_sel <= PC_from_pc;
             cmd.PC_we <= '1';
+             -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
             -- next state
-            state_d <= S_Pre_Fetch;
+            state_d <= S_Fetch;
             
 
 ---------- Instructions arithmétiques et logiques ----------
