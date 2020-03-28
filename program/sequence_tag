@@ -5,3 +5,4 @@ ADDI
 ADD
 AUIPC
 SLL
+LW

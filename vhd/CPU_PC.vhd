@@ -32,7 +32,11 @@ architecture RTL of CPU_PC is
       S_Fetch,
       S_ADD,
       S_AUIPC,
-      S_SLL
+      S_SLL,
+      S_LW1,
+      S_LW2,
+      S_SW1,
+      S_SW2
     );
 
     signal state_d, state_q : State_type;
@@ -149,6 +153,18 @@ begin
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_SLL;
+            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0000011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_LW1;
+            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0100011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SW1;
             else
               state_d <= S_Error;
             end if;
@@ -174,7 +190,7 @@ begin
 
 
           when S_AUIPC =>
-            -- rd ImmU + pc
+            -- rd <- ImmU + pc
             cmd.PC_X_sel <= PC_X_pc;
             cmd.PC_Y_sel <= PC_Y_immU;
             cmd.RF_we <= '1';
@@ -190,7 +206,7 @@ begin
 ---------- Instructions arithmétiques et logiques ----------
 
           when S_ADDI =>
-            -- mem_addr <- rs1 + ImmI
+            -- rd <- rs1 + ImmI
             cmd.ALU_Y_sel <= ALU_Y_immI;
             cmd.ALU_op <= ALU_plus;
             cmd.DATA_sel <= DATA_from_alu;
@@ -237,8 +253,54 @@ begin
 
 ---------- Instructions de chargement à partir de la mémoire ----------
 
+          when S_LW1 =>
+            -- ADDR <- immI + rs1
+            cmd.AD_Y_sel <= AD_Y_immI;
+            cmd.AD_we <= '1';
+            -- lecture mem[immI + rs1]
+            cmd.ADDR_sel <= ADDR_from_ad;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_LW2;
+
+          when S_LW2 =>
+            -- rd <- mem[immI + rs1]
+            cmd.RF_SIGN_enable <= '1';
+            cmd.RF_SIZE_sel <= RF_SIZE_word;
+            cmd.DATA_sel <= DATA_from_mem;
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
+            
 ---------- Instructions de sauvegarde en mémoire ----------
 
+          when S_SW1 =>
+            -- AD <- rs1 + cst
+            cmd.AD_Y_sel <= AD_Y_immS;
+            cmd.AD_we <= '1';
+            -- lecture mem[rs1 + cst]
+            cmd.ADDR_sel <= ADDR_from_ad;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_SW2;
+
+
+          when S_SW2 =>
+            -- mem[rs1 + cst] <- rs2 se fait tout seul
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+                       
+            
 ---------- Instructions d'accès aux CSR ----------
 
           
