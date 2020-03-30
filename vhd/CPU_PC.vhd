@@ -154,7 +154,7 @@ begin
               state_d <= S_SLL;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BEQ1;
-            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0000000" then
+            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
