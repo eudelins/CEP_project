@@ -29,7 +29,7 @@ begin
   rs2_op <= signed(alu_y);
   extension_signe <= (not IR(12) and not IR(6)) or (IR(6) and not IR(13));
   if (extension_signe = '1') then
-    sous <= (rs1_op(31) & rs1_op) - (rs2_op(31) & rs2_op)
+    sous <= (rs1_op(31) & rs1_op) - (rs2_op(31) & rs2_op);
   else
     sous <= ('0' & rs1_op) - ('0' & rs2_op);
   end if;
