@@ -34,7 +34,8 @@ architecture RTL of CPU_PC is
       S_AUIPC,
       S_SLL,
       S_BEQ1,
-      S_BEQ2
+      S_BEQ2,
+      S_SLT
       );
 
     signal state_d, state_q : State_type;
@@ -153,6 +154,11 @@ begin
               state_d <= S_SLL;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BEQ1;
+            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0000000" then
+              -- PC <- PC + 4
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SLT;
             else
               state_d <= S_Error;
             end if;
@@ -235,6 +241,20 @@ begin
             -- next state
             state_d <= S_Fetch;
 
+
+          when S_SLT =>
+            -- si rs1 < rs2, rd <- 0³¹||1
+            -- si rs1 >= rs2, rd <- 0³²
+            cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+            cmd.DATA_sel <= DATA_from_slt;
+            RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
             
 
 ---------- Instructions de saut ----------
@@ -257,6 +277,7 @@ begin
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
+            end if;
             -- next state
             state_d <= S_Pre_Fetch;
             
