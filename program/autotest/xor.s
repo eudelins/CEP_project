@@ -8,6 +8,7 @@
   xor x31, x0, x0
   addi x1, x0, 0xf0f
   addi x2, x0, 0x333
+  xor x31, x0, x1
 
 
 	# max_cycle 50
