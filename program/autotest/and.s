@@ -8,7 +8,7 @@
 
 	addi x1, x0, 12
 	addi x2, x0, 5
-  slt x31, x1, x2  # test de rs1 and rs2
+  and x31, x1, x2  # test de rs1 and rs2
 					# les différents bits des registres donnent
 					# les 4 configurations possibles des bits (00, 01, 11, 10)
 
