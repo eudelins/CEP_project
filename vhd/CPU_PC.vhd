@@ -157,14 +157,16 @@ begin
               state_d <= S_BEQ1;
             elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_SLT;
              elsif status.IR(14 downto 12) = "111" and status.IR(6 downto 0) = "0110011" then
-              -- PC <- PC + 4
+               -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
-              state_d <= S_AND
+              state_d <= S_AND;
             else
               state_d <= S_Error;
             end if;
@@ -273,7 +275,7 @@ begin
               cmd.mem_ce <= '1';
               cmd.mem_we <= '0';
               -- next state
-              state_d <= S_Fetch  
+              state_d <= S_Fetch;  
 
             
 
