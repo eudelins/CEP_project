@@ -7,8 +7,11 @@
 
 
 	addi x1, x0, 1
-  beq x1, x0, 0
+  beq x1, x0, plus
   auipc x31, 0
+
+plus:
+  add x31, x1, x0
 
 	# max_cycle 50
 	# pout_start
