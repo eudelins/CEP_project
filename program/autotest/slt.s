@@ -3,7 +3,7 @@
 
   # le registre x0 contient toujours 0
   # syntaxe: slt rd, rs1, rs2
-  # rs1 et rs2 sont codés sur 5 bits
+	# rs1 et rs2 continnent des valeurs codées sur 32 bits
 
 
 	addi x1, x0, 354
