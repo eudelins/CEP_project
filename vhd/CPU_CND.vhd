@@ -18,9 +18,11 @@ end entity;
 
 architecture RTL of CPU_CND is
 
-  signal IR_logic, extension_signe, jc_final, z, s : std_logic;
+  signal IR_logic : unsigned(31 downto 0);
+  signal  extension_signe, jc_final, z, s : std_logic;
   
 begin
+  IR_logic <= unsigned(IR);
   extension_signe <= (not IR(12) and not IR(6)) or (IR(6) and not IR(13));
   s <= '0' when rs1 < alu_y else '1';
   z <= '1' when rs1 = alu_y else '0';
