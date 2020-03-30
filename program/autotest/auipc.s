@@ -3,6 +3,7 @@
 
   # le registre x0 contient toujours 0
   # syntaxe: auipc rd, imm
+	# opération: rd <- imm + pc
 
 
   auipc x31, 0  # test: chargement de la valeur de PC
