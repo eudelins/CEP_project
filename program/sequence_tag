@@ -6,3 +6,4 @@ ADD
 AUIPC
 SLL
 LW
+SLT
