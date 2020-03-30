@@ -7,13 +7,20 @@
 
 
 	addi x1, x0, 1
-  beq x1, x0, plus
+  beq x1, x0, plus  # test si rs1 != rs2
   auipc x31, 0
+  beq x0, x0, plus  # test si rs1 = rs2
+  beq x0, x0, chargement
 
 plus:
   add x31, x1, x0
 
+chargement:
+  lui x31, 0xfffff
+
 	# max_cycle 50
 	# pout_start
 	# 00001008
+  # 00000001
+	# FFFFF000
 	# pout_end
