@@ -30,8 +30,11 @@ architecture RTL of CPU_PC is
       S_Init,
       S_Pre_Fetch,
       S_Fetch,
-      S_ADD
-    );
+      S_ADD,
+      S_AUIPC,
+      S_SLL,
+      S_SLT,
+      );
 
     signal state_d, state_q : State_type;
 
@@ -121,22 +124,37 @@ begin
             state_d <= S_Decode;
 
           when S_Decode =>
-            -- PC <- PC + 4
             if status.IR(6 downto 0) = "0110111" then
+              -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_LUI;
             elsif status.IR(6 downto 0) = "0010011" then
+              -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_ADDI;
-            elsif status.IR(6 downto 0) = "0110011" then
+            elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "0110011" then
+              -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_ADD;
+            elsif status.IR(6 downto 0) = "0010111" then
+              state_d <= S_AUIPC;
+            elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "0110011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SLL;
+            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0000000" then
+              -- PC <- PC + 4
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SLT;
             else
               state_d <= S_Error;
             end if;
@@ -160,10 +178,25 @@ begin
             -- next state
             state_d <= S_Fetch;
 
+
+          when S_AUIPC =>
+            -- rd <- ImmU + pc
+            cmd.PC_X_sel <= PC_X_pc;
+            cmd.PC_Y_sel <= PC_Y_immU;
+            cmd.RF_we <= '1';
+            cmd.DATA_sel <= DATA_from_pc;
+            -- PC <- PC + 4
+            cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+            cmd.PC_sel <= PC_from_pc;
+            cmd.PC_we <= '1';
+            -- next state
+            state_d <= S_Pre_Fetch;
+
+
 ---------- Instructions arithmétiques et logiques ----------
 
           when S_ADDI =>
-            -- mem_addr <- rs1 + ImmI
+            -- rd <- rs1 + ImmI
             cmd.ALU_Y_sel <= ALU_Y_immI;
             cmd.ALU_op <= ALU_plus;
             cmd.DATA_sel <= DATA_from_alu;
@@ -190,18 +223,32 @@ begin
             state_d <= S_Fetch;
 
 
-        when S_SLL =>
+          when S_SLL =>
             -- rd <- rs1 << rs2(0:4)
             cmd.SHIFTER_Y_sel <= SHIFTER_Y_rs2;
-            cmd.SHIFTER_op <= SHIFT_11;
-            cmd.DATA_sel <= DATA_form_shifter;
-            cmd.RF_WE = '1';
+            cmd.SHIFTER_op <= SHIFT_ll;
+            cmd.DATA_sel <= DATA_from_shifter;
+            cmd.RF_we <= '1';
             -- lecture mem[PC]
             cmd.ADDR_sel <= ADDR_from_pc;
             cmd.mem_ce <= '1';
             cmd.mem_we <= '0';
             -- next state
             state_d <= S_Fetch;
+
+
+        when S_SLT =>
+        -- si rs1 < rs2, rd <- 0³¹||1
+        -- si rs1 >= rs2, rd <- 0³²
+        cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+        cmd.DATA_sel <= DATA_from_slt;
+        RF_we <= '1';
+        -- lecture mem[PC]
+        cmd.ADDR_sel <= ADDR_from_pc;
+        cmd.mem_ce <= '1';
+        cmd.mem_we <= '0';
+        -- next state
+        state_d <= S_Fetch;
 
 
 ---------- Instructions de saut ----------
