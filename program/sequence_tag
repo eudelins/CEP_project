@@ -7,3 +7,4 @@ AUIPC
 SLL
 LW
 SLT
+BEQ
