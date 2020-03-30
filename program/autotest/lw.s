@@ -5,13 +5,13 @@
   # syntaxe: lw rd, imm(rs1)
 	# opération: rd <- mem[immI + rs1]
 
-	addi x5, x0, 0x01C
-	sw x5, 5(x0)
-	lw x31, 5(x0)
+	add x0, x0, x0
+	lui x5, 1
+	lw x31, 0(x5)
 
 
 
 	# max_cycle 50
 	# pout_start
-	# 0000001C
+	# 00000033
 	# pout_end
