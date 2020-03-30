@@ -1,4 +1,4 @@
-# TAG = or
+# TAG = ori
 	.text
 
   # le registre x0 contient toujours 0
