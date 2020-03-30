@@ -26,7 +26,7 @@ begin
   extension_signe <= (not IR(12) and not IR(6)) or (IR(6) and not IR(13));
   s <= '0' when rs1 < alu_y else '1';
   z <= '1' when rs1 = alu_y else '0';
-  jc_final <= (not IR(14) and (IR(12) xor z))  or ((IR[12] xor s) and IR(14));
+  jc_final <= (not IR(14) and (IR(12) xor z))  or ((IR(12) xor s) and IR(14));
   jcond <= jc_final;
   slt <= s;
   
