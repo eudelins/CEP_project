@@ -1,9 +1,8 @@
 # TAG = beq
 	.text
 
-	lui x31, 0       #Test chargement d'une valeur nulle
-	lui x31, 0xfffff #Test chargement d'une valeur maximal sur 20 bits
-	lui x31, 0x12345 #Test chargement d'une valeur quelconque
+	addi x1, x0, 1
+  beq
 
 	# max_cycle 50
 	# pout_start
