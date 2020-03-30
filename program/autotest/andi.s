@@ -6,7 +6,7 @@
 
 
   andi x31, x0, 112
-  addi x1, x0, Ox111
+  addi x1, x0, 0x111
   andi x31, x1, 0x111
 
 
