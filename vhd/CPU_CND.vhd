@@ -30,7 +30,7 @@ begin
   extension_signe <= (not IR(12) and not IR(6)) or (IR(6) and not IR(13));
   sous <= (rs1_op(31) & rs1_op) - (rs2_op(31) & rs2_op) when extension_signe = '1'
           else ('0' & rs1_op) - ('0' & rs2_op);
-  s <= '0' when sous < "000000000000000000000000000000000" else '1';
+  s <= '1' when sous < "000000000000000000000000000000000" else '0';
   z <= '1' when rs1 = alu_y else '0';
   jc_final <= (not IR(14) and (IR(12) xor z))  or ((IR(12) xor s) and IR(14));
   jcond <= jc_final;
