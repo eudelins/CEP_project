@@ -36,7 +36,8 @@ architecture RTL of CPU_PC is
       S_BEQ1,
       S_BEQ2,
       S_SLT,
-      S_AND
+      S_AND,
+      S_OR
       );
 
     signal state_d, state_q : State_type;
@@ -163,15 +164,24 @@ begin
 
             elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_SLT;
 
             elsif status.IR(14 downto 12) = "111" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_AND;
+
+            elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "0110011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we = '1';
+              state_d <= S_OR;
 
             else
               state_d <= S_Error;
@@ -270,17 +280,31 @@ begin
 
 
           when S_AND =>
-          -- rd <- rs1 and rs2
-          cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
-          cmd.LOGICAL_op <= LOGICAL_and;
-          cmd.DATA_sel <= DATA_from_logical;
-          cmd.RF_we <= '1';
-          -- lecture mem[PC]
-          cmd.ADDR_sel <= ADDR_from_pc;
-          cmd.mem_ce <= '1';
-          cmd.mem_we <= '0';
-          -- next state
-          state_d <= S_Fetch;
+            -- rd <- rs1 and rs2
+            cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+            cmd.LOGICAL_op <= LOGICAL_and;
+            cmd.DATA_sel <= DATA_from_logical;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
+
+          when S_OR =>
+            -- rd <- rs1 or rs2
+            cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+            cmd.LOGICAL_op <= LOGICAL_or;
+            cmd.DATA_sel <= DATA_from_logical;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
 
 
 ---------- Instructions de saut ----------
