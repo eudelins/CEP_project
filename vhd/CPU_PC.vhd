@@ -154,7 +154,7 @@ begin
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
-              cmd.PC_we = '1';
+              cmd.PC_we <= '1';
               state_d <= S_OR;
             elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "0010011" then
               -- PC <- PC + 4
