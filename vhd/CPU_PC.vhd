@@ -247,7 +247,7 @@ begin
             -- si rs1 >= rs2, rd <- 0³²
             cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
             cmd.DATA_sel <= DATA_from_slt;
-            RF_we <= '1';
+            cmd.RF_we <= '1';
             -- lecture mem[PC]
             cmd.ADDR_sel <= ADDR_from_pc;
             cmd.mem_ce <= '1';
