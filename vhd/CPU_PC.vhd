@@ -44,7 +44,8 @@ architecture RTL of CPU_PC is
       S_XORI,
       S_SUB,
       S_SRL,
-      S_SRA
+      S_SRA,
+      S_SRAI
       );
 
     signal state_d, state_q : State_type;
@@ -215,6 +216,12 @@ begin
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_SRA;
+            elsif status.IR(31 downto 25) = "0100000" and status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "0010011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SRAI;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BEQ1;
             elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
@@ -347,6 +354,22 @@ begin
             cmd.mem_we <= '0';
             -- next state
             state_d <= S_Fetch;
+
+
+            
+          when S_SRAI =>
+            -- rd <- rs1 >> shamt
+            cmd.SHIFTER_Y_sel <= SHIFTER_Y_ir_sh;
+            cmd.SHIFTER_op <= SHIFT_ra;
+            cmd.DATA_sel <= DATA_from_shifter;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
             
             
 
