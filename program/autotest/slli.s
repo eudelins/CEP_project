@@ -11,10 +11,10 @@
 	slli x31, x1, 0
 
 	addi x1, x0, 2045
-	sll x31, x1, 8
+	slli x31, x1, 8
 
 	addi x1, x0, -393
-	sll x31, x1, 22								
+	slli x31, x1, 22								
 
 	# max_cycle 50
 	# pout_start
