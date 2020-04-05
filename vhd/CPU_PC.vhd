@@ -37,6 +37,8 @@ architecture RTL of CPU_PC is
       S_BEQ2,
       S_BNE1,
       S_BNE2,
+      S_BLT1,
+      S_BLT2,
       S_SLT,
       S_AND,
       S_ORI,
@@ -240,7 +242,7 @@ begin
               state_d <= S_SLLI;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BEQ1;
-            elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "1100011" then
+            elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BNE1;
             elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
