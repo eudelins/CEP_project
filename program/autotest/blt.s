@@ -7,7 +7,7 @@
 
 
 	addi x1, x0, -1
-  blt x0, x1, plus  # test si rs1 >= rs2
+  blt x0, x1, chargement  # test si rs1 >= rs2
   auipc x31, 0
   blt x1, x0, chargement  # test si rs1 < rs2
 
