@@ -9,13 +9,11 @@
 	addi x1, x0, 1
   bltu x1, x0, plus  # test si rs1 >= rs2
   auipc x31, 0
-  addi x1, x0, 0xf00
-  bltu x0, x1, plus  # test si rs1 < rs2 en tenant compte de la comparaison non signé
+  addi x1, x0, -1
+  bltu x0, x1, chargement  # test si rs1 < rs2 en tenant compte de la comparaison non signé
   addi x1, x0, 1
   bltu x0, x1, chargement  # test du cas classique
 
-plus:
-  add x31, x1, x0
 
 chargement:
   lui x31, 0xfffff
@@ -23,6 +21,6 @@ chargement:
 	# max_cycle 50
 	# pout_start
 	# 00001008
-  # FFFFFF00
+	# FFFFF000
 	# FFFFF000
 	# pout_end
