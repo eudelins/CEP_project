@@ -39,6 +39,8 @@ architecture RTL of CPU_PC is
       S_BNE2,
       S_BLT1,
       S_BLT2,
+      S_BGE1,
+      S_BGE2,
       S_SLT,
       S_AND,
       S_ORI,
@@ -244,6 +246,10 @@ begin
               state_d <= S_BEQ1;
             elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BNE1;
+            elsif status.IR(14 downto 12) = "100" and status.IR(6 downto 0) = "1100011" then
+              state_d <= S_BLT1;
+            elsif status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "1100011" then
+              state_d <= S_BGE1;
             elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
@@ -568,6 +574,56 @@ begin
             end if;
             -- next state
             state_d <= S_Pre_Fetch;
+
+
+          
+          when S_BLT1 =>
+              -- calcul de SLT
+              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+              -- next state
+              state_d <= S_BLT2;
+
+
+          when S_BLT2 =>
+            if status.JCOND then
+              -- PC <- PC + cst
+              cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            else
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            end if;
+            -- next state
+            state_d <= S_Pre_Fetch;
+
+
+
+          when S_BGE1 =>
+              -- calcul de SLT
+              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+              -- next state
+              state_d <= S_BGE2;
+
+
+          when S_BGE2 =>
+            if not status.JCOND then
+              -- PC <- PC + cst
+              cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            else
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            end if;
+            -- next state
+            state_d <= S_Pre_Fetch;
+
+
 
             
             
