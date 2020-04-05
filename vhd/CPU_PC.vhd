@@ -247,7 +247,7 @@ begin
             elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BNE1;
             elsif status.IR(14 downto 12) = "100" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_BLT1;
+              state_d <= S_BLT_BLTU1;
             elsif status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BGE1;
             elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "1100011" then
