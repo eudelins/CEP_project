@@ -2,8 +2,8 @@
 	.text
 
   # le registre x0 contient toujours 0
-  # syntaxe: blt rs1, rs2, label
-  # opération: rs1 < rs2 => pc <- pc + cst
+  # syntaxe: bge rs1, rs2, label
+  # opération: rs1 >= rs2 => pc <- pc + cst
 
 
 	addi x1, x0, 1
