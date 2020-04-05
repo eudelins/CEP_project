@@ -2,7 +2,7 @@
 	.text
 
   # le registre x0 contient toujours 0
-  # syntaxe: sll rd, rs1, imm
+  # syntaxe: slli rd, rs1, imm
 
 
 	slli x31, x0, 0
@@ -14,7 +14,7 @@
 	slli x31, x1, 8
 
 	addi x1, x0, -393
-	slli x31, x1, 22								
+	slli x31, x1, 22
 
 	# max_cycle 50
 	# pout_start

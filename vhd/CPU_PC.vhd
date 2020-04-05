@@ -44,6 +44,7 @@ architecture RTL of CPU_PC is
       S_XORI,
       S_SUB,
       S_SRL,
+      S_SRLI,
       S_SRA,
       S_SRAI,
       S_SLLI
@@ -211,6 +212,12 @@ begin
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_SRL;
+            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "0010011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SRLI;
             elsif status.IR(31 downto 25) = "0100000" and status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
@@ -336,7 +343,7 @@ begin
 
 
           when S_SLLI =>
-            -- rd <- rs1 << rs2(0:4)
+            -- rd <- rs1 << imm
               cmd.SHIFTER_Y_sel <= SHIFTER_Y_ir_sh;
               cmd.SHIFTER_op <= SHIFT_ll;
               cmd.DATA_sel <= DATA_from_shifter;
@@ -353,6 +360,20 @@ begin
           when S_SRL =>
             -- rd <- rs1 >> rs2(0:4)
             cmd.SHIFTER_Y_sel <= SHIFTER_Y_rs2;
+            cmd.SHIFTER_op <= SHIFT_rl;
+            cmd.DATA_sel <= DATA_from_shifter;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
+
+          when S_SRLI =>
+            -- rd <- rs1 >> immm
+            cmd.SHIFTER_Y_sel <= SHIFTER_Y_ir_sh;
             cmd.SHIFTER_op <= SHIFT_rl;
             cmd.DATA_sel <= DATA_from_shifter;
             cmd.RF_we <= '1';
