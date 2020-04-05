@@ -9,7 +9,7 @@
 	addi x1, x0, 1
   bltu x1, x0, plus  # test si rs1 >= rs2
   auipc x31, 0
-  addi x1, x0, 0xF00
+  addi x1, x0, 0xf00
   bltu x0, x1, plus  # test si rs1 < rs2 en tenant compte de la comparaison non signé
   addi x1, x0, 1
   bltu x0, x1, chargement  # test du cas classique
