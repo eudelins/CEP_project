@@ -11,7 +11,7 @@
   # 00000000
   lui x2, 0x0BCDE
   sw x2, 0(x1)
-  lw x31, 0(x1)
+  lw x31, 2(x1)
 
 
 	# max_cycle 50
