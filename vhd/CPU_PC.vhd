@@ -656,7 +656,7 @@ begin
             cmd.AD_we <= '1';
             cmd.ADDR_sel <= ADDR_from_ad;
             -- next state
-            state_d <= S_LW2
+            state_d <= S_LW2;
 
             
           when S_LW2 =>
