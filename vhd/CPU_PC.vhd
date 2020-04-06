@@ -258,9 +258,9 @@ begin
               state_d <= S_BGE1;
             elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BLT_BLTU1;
-             elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_JAL;
             elsif status.IR(6 downto 0) = "1101111" then
+              state_d <= S_JAL;
+            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
