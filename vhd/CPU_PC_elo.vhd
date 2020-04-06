@@ -35,9 +35,30 @@ architecture RTL of CPU_PC is
       S_SLL,
       S_BEQ1,
       S_BEQ2,
+      S_BNE1,
+      S_BNE2,
+      S_BLT_BLTU1,
+      S_BLT_BLTU2,
+      S_BGE1,
+      S_BGE2,
       S_SLT,
       S_AND,
-      S_OR
+      S_ORI,
+      S_OR,
+      S_ANDI,
+      S_XOR,
+      S_XORI,
+      S_SUB,
+      S_SRL,
+      S_SRLI,
+      S_SRA,
+      S_SRAI,
+      S_SLLI,
+      S_LW1,
+      S_LW2,
+      S_SW1,
+      S_SW2,
+      S_JAL
       );
 
     signal state_d, state_q : State_type;
@@ -134,55 +155,128 @@ begin
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_LUI;
-
-            elsif status.IR(6 downto 0) = "0010011" then
+            elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "0010011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_ADDI;
-
-            elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "0110011" then
+            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_ADD;
-
+            elsif status.IR(31 downto 25) = "0100000"  and status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "0110011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SUB;
             elsif status.IR(6 downto 0) = "0010111" then
               state_d <= S_AUIPC;
-
+            elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "0110011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_OR;
+            elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "0010011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_ORI;
+            elsif status.IR(14 downto 12) = "111" and status.IR(6 downto 0) = "0110011" then
+               -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_AND;
+            elsif status.IR(14 downto 12) = "111" and status.IR(6 downto 0) = "0010011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_ANDI;
+            elsif status.IR(14 downto 12) = "100" and status.IR(6 downto 0) = "0110011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_XOR;
+            elsif status.IR(14 downto 12) = "100" and status.IR(6 downto 0) = "0010011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_XORI;
             elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_SLL;
-
+            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "0110011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SRL;
+            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "0010011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SRLI;
+            elsif status.IR(31 downto 25) = "0100000" and status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "0110011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SRA;
+            elsif status.IR(31 downto 25) = "0100000" and status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "0010011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SRAI;
+            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "0010011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_SLLI;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BEQ1;
-
+            elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "1100011" then
+              state_d <= S_BNE1;
+            elsif status.IR(14 downto 12) = "100" and status.IR(6 downto 0) = "1100011" then
+              state_d <= S_BLT_BLTU1;
+            elsif status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "1100011" then
+              state_d <= S_BGE1;
+            elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "1100011" then
+              state_d <= S_BLT_BLTU1;
             elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_SLT;
-
-            elsif status.IR(14 downto 12) = "111" and status.IR(6 downto 0) = "0110011" then
+            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0000011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
-              state_d <= S_AND;
-
-            elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "0110011" then
+              state_d <= S_LW1;
+            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0100011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
-              cmd.PC_we = '1';
-              state_d <= S_OR;
-
+              cmd.PC_we <= '1';
+              state_d <= S_SW1;
+            elsif status.IR(6 downto 0) = "1101111" then
+              state_d <= S_JAL;
             else
               state_d <= S_Error;
             end if;
@@ -193,54 +287,68 @@ begin
 
 ---------- Instructions avec immediat de type U ----------
 
-          when S_LUI =>
-            -- rd <- ImmU + 0
-            cmd.PC_X_sel <= PC_X_cst_x00;
-            cmd.PC_Y_sel <= PC_Y_immU;
-            cmd.RF_we <= '1';
-            cmd.DATA_sel <= DATA_from_pc;
-            -- lecture mem[PC]
-            cmd.ADDR_sel <= ADDR_from_pc;
-            cmd.mem_ce <= '1';
-            cmd.mem_we <= '0';
-            -- next state
-            state_d <= S_Fetch;
+         when S_LUI =>
+              -- rd <- ImmU + 0
+              cmd.PC_X_sel <= PC_X_cst_x00;
+              cmd.PC_Y_sel <= PC_Y_immU;
+              cmd.RF_we <= '1';
+              cmd.DATA_sel <= DATA_from_pc;
+              -- lecture mem[PC]
+              cmd.ADDR_sel <= ADDR_from_pc;
+              cmd.mem_ce <= '1';
+              cmd.mem_we <= '0';
+              -- next state
+              state_d <= S_Fetch;
 
 
-          when S_AUIPC =>
-            -- rd <- ImmU + pc
-            cmd.PC_X_sel <= PC_X_pc;
-            cmd.PC_Y_sel <= PC_Y_immU;
-            cmd.RF_we <= '1';
-            cmd.DATA_sel <= DATA_from_pc;
-            -- PC <- PC + 4
-            cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
-            cmd.PC_sel <= PC_from_pc;
-            cmd.PC_we <= '1';
-            -- next state
-            state_d <= S_Pre_Fetch;
+         when S_AUIPC =>
+              -- rd <- ImmU + pc
+              cmd.PC_X_sel <= PC_X_pc;
+              cmd.PC_Y_sel <= PC_Y_immU;
+              cmd.RF_we <= '1';
+              cmd.DATA_sel <= DATA_from_pc;
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              -- next state
+              state_d <= S_Pre_Fetch;
 
 
 ---------- Instructions arithmétiques et logiques ----------
 
-          when S_ADDI =>
-            -- rd <- rs1 + ImmI
-            cmd.ALU_Y_sel <= ALU_Y_immI;
-            cmd.ALU_op <= ALU_plus;
-            cmd.DATA_sel <= DATA_from_alu;
-            cmd.RF_we <= '1';
-            -- lecture mem[PC]
-            cmd.ADDR_sel <= ADDR_from_pc;
-            cmd.mem_ce <= '1';
-            cmd.mem_we <= '0';
-            -- next state
-            state_d <= S_Fetch;
+         when S_ADDI =>
+              -- rd <- rs1 + ImmI
+              cmd.ALU_Y_sel <= ALU_Y_immI;
+              cmd.ALU_op <= ALU_plus;
+              cmd.DATA_sel <= DATA_from_alu;
+              cmd.RF_we <= '1';
+              -- lecture mem[PC]
+              cmd.ADDR_sel <= ADDR_from_pc;
+              cmd.mem_ce <= '1';
+              cmd.mem_we <= '0';
+              -- next state
+              state_d <= S_Fetch;
 
 
-          when S_ADD =>
-            -- mem_addr <- rs1 + rs2
+         when S_ADD =>
+              -- mem_addr <- rs1 + rs2
+              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+              cmd.ALU_op <= ALU_plus;
+              cmd.DATA_sel <= DATA_from_alu;
+              cmd.RF_we <= '1';
+              -- lecture mem[PC]
+              cmd.ADDR_sel <= ADDR_from_pc;
+              cmd.mem_ce <= '1';
+              cmd.mem_we <= '0';
+              -- next state
+              state_d <= S_Fetch;
+
+
+          when S_SUB =>
+            -- rd <- rs1 - rs2
             cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
-            cmd.ALU_op <= ALU_plus;
+            cmd.ALU_op <= ALU_minus;
             cmd.DATA_sel <= DATA_from_alu;
             cmd.RF_we <= '1';
             -- lecture mem[PC]
@@ -249,12 +357,43 @@ begin
             cmd.mem_we <= '0';
             -- next state
             state_d <= S_Fetch;
+
 
 
           when S_SLL =>
-            -- rd <- rs1 << rs2(0:4)
+              -- rd <- rs1 << rs2(0:4)
+              cmd.SHIFTER_Y_sel <= SHIFTER_Y_rs2;
+              cmd.SHIFTER_op <= SHIFT_ll;
+              cmd.DATA_sel <= DATA_from_shifter;
+              cmd.RF_we <= '1';
+              -- lecture mem[PC]
+              cmd.ADDR_sel <= ADDR_from_pc;
+              cmd.mem_ce <= '1';
+              cmd.mem_we <= '0';
+              -- next state
+              state_d <= S_Fetch;
+
+
+
+          when S_SLLI =>
+            -- rd <- rs1 << imm
+              cmd.SHIFTER_Y_sel <= SHIFTER_Y_ir_sh;
+              cmd.SHIFTER_op <= SHIFT_ll;
+              cmd.DATA_sel <= DATA_from_shifter;
+              cmd.RF_we <= '1';
+              -- lecture mem[PC]
+              cmd.ADDR_sel <= ADDR_from_pc;
+              cmd.mem_ce <= '1';
+              cmd.mem_we <= '0';
+              -- next state
+              state_d <= S_Fetch;
+
+
+
+          when S_SRL =>
+            -- rd <- rs1 >> rs2(0:4)
             cmd.SHIFTER_Y_sel <= SHIFTER_Y_rs2;
-            cmd.SHIFTER_op <= SHIFT_ll;
+            cmd.SHIFTER_op <= SHIFT_rl;
             cmd.DATA_sel <= DATA_from_shifter;
             cmd.RF_we <= '1';
             -- lecture mem[PC]
@@ -265,11 +404,11 @@ begin
             state_d <= S_Fetch;
 
 
-          when S_SLT =>
-            -- si rs1 < rs2, rd <- 0³¹||1
-            -- si rs1 >= rs2, rd <- 0³²
-            cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
-            cmd.DATA_sel <= DATA_from_slt;
+          when S_SRLI =>
+            -- rd <- rs1 >> immm
+            cmd.SHIFTER_Y_sel <= SHIFTER_Y_ir_sh;
+            cmd.SHIFTER_op <= SHIFT_rl;
+            cmd.DATA_sel <= DATA_from_shifter;
             cmd.RF_we <= '1';
             -- lecture mem[PC]
             cmd.ADDR_sel <= ADDR_from_pc;
@@ -279,9 +418,68 @@ begin
             state_d <= S_Fetch;
 
 
-          when S_AND =>
-            -- rd <- rs1 and rs2
-            cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+          when S_SRA =>
+            -- rd <- rs1 >> rs2(0:4)
+            cmd.SHIFTER_Y_sel <= SHIFTER_Y_rs2;
+            cmd.SHIFTER_op <= SHIFT_ra;
+            cmd.DATA_sel <= DATA_from_shifter;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
+
+
+          when S_SRAI =>
+            -- rd <- rs1 >> shamt
+            cmd.SHIFTER_Y_sel <= SHIFTER_Y_ir_sh;
+            cmd.SHIFTER_op <= SHIFT_ra;
+            cmd.DATA_sel <= DATA_from_shifter;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
+
+
+
+         when S_SLT =>
+              -- si rs1 < rs2, rd <- 0³¹||1
+              -- si rs1 >= rs2, rd <- 0³²
+              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+              cmd.DATA_sel <= DATA_from_slt;
+              cmd.RF_we <= '1';
+              -- lecture mem[PC]
+              cmd.ADDR_sel <= ADDR_from_pc;
+              cmd.mem_ce <= '1';
+              cmd.mem_we <= '0';
+              -- next state
+              state_d <= S_Fetch;
+
+
+         when S_AND =>
+              -- rd <- rs1 and rs2
+              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+              cmd.LOGICAL_op <= LOGICAL_and;
+              cmd.DATA_sel <= DATA_from_logical;
+              cmd.RF_we <= '1';
+              -- lecture mem[PC]
+              cmd.ADDR_sel <= ADDR_from_pc;
+              cmd.mem_ce <= '1';
+              cmd.mem_we <= '0';
+              -- next state
+              state_d <= S_Fetch;
+
+
+          when S_ANDI =>
+            -- rd <- immI and rs1
+            cmd.ALU_Y_sel <= ALU_Y_immI;
             cmd.LOGICAL_op <= LOGICAL_and;
             cmd.DATA_sel <= DATA_from_logical;
             cmd.RF_we <= '1';
@@ -291,6 +489,7 @@ begin
             cmd.mem_we <= '0';
             -- next state
             state_d <= S_Fetch;
+
 
 
           when S_OR =>
@@ -307,13 +506,56 @@ begin
             state_d <= S_Fetch;
 
 
+          when S_ORI =>
+            -- rd <- rs1 or immI
+            cmd.ALU_Y_sel <= ALU_Y_immI;
+            cmd.LOGICAL_op <= LOGICAL_or;
+            cmd.DATA_sel <= DATA_from_logical;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
+
+
+          when S_XOR =>
+            -- rd <- rs1 xor rs2
+            cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+            cmd.LOGICAL_op <= LOGICAL_xor;
+            cmd.DATA_sel <= DATA_from_logical;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
+
+          when S_XORI =>
+            -- rd <- rs1 xor immI
+            cmd.ALU_Y_sel <= ALU_Y_immI;
+            cmd.LOGICAL_op <= LOGICAL_xor;
+            cmd.DATA_sel <= DATA_from_logical;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
+
 ---------- Instructions de saut ----------
 
           when S_BEQ1 =>
-            -- calcul de status.JCOND
-            cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
-            -- next state
-            state_d <= S_BEQ2;
+              -- calcul de status.JCOND
+              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+              -- next state
+              state_d <= S_BEQ2;
 
 
           when S_BEQ2 =>
@@ -332,13 +574,141 @@ begin
             state_d <= S_Pre_Fetch;
 
 
+          when S_BNE1 =>
+              -- calcul de status.JCOND
+              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+              -- next state
+              state_d <= S_BEQ2;
+
+
+          when S_BNE2 =>
+            if not status.JCOND then
+              -- PC <- PC + cst
+              cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            else
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            end if;
+            -- next state
+            state_d <= S_Pre_Fetch;
+
+
+
+          when S_BLT_BLTU1 =>
+              -- calcul de SLT
+              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+              -- next state
+              state_d <= S_BLT_BLTU2;
+
+
+          when S_BLT_BLTU2 =>
+            if status.JCOND then
+              -- PC <- PC + cst
+              cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            else
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            end if;
+            -- next state
+            state_d <= S_Pre_Fetch;
+
+
+
+          when S_BGE1 =>
+              -- calcul de SLT
+              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
+              -- next state
+              state_d <= S_BGE2;
+
+
+          when S_BGE2 =>
+            if status.JCOND then
+              -- PC <- PC + cst
+              cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            else
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+            end if;
+            -- next state
+            state_d <= S_Pre_Fetch;
+
+
+          when S_JAL =>
+            -- rd <- PC + 4
+            cmd.PC_X_sel <= PC_X_pc;
+            cmd.PC_Y_sel <= PC_Y_cst_x04;
+            cmd.DATA_sel <= DATA_from_pc;
+            cmd.RD_we <= '1';
+            -- PC <- PC + cst
+            cmd.TO_PC_Y_sel <= TO_PC_Y_immJ;
+            cmd.PC_sel <= PC_from_pc;
+            cmd.PC_we <= '1';
+            -- next state
+            state_d <= S_Pre_Fetch;
+
 
 ---------- Instructions de chargement à partir de la mémoire ----------
 
 
+          when S_LW1 =>
+            -- Calcul de rs1 + immI
+            cmd.AD_Y_sel <= AD_Y_immI;
+            cmd.AD_we <= '1';
+            cmd.ADDR_sel <= ADDR_from_ad;
+            -- lecture mem[ADDR]
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_LW2;
+
+          when S_LW2 =>
+            -- rd <- mem[rs1 + immI]
+            cmd.RF_SIZE_sel <= RF_SIZE_word;
+            cmd.RF_SIGN_enable <= '0';
+            cmd.DATA_sel <= DATA_from_mem;
+            cmd.RF_we <= '1';
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
 
 
 ---------- Instructions de sauvegarde en mémoire ----------
+
+
+
+          when S_SW1 =>
+            -- calcul de rs1 + immI
+            cmd.AD_Y_sel <= AD_Y_immI;
+            cmd.AD_we <= '1';
+            cmd.ADDR_sel <= ADDR_from_ad;
+            -- next state
+            state_d <= S_SW2;
+
+
+          when S_SW2 =>
+            -- mem_dataout <- rs2
+            -- lecture mem[PC]
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
 
 
 
