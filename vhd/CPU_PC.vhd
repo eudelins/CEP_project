@@ -56,7 +56,8 @@ architecture RTL of CPU_PC is
       S_SLLI,
       S_LW1,
       S_LW2,
-      S_SW
+      S_SW1,
+      S_SW2
       );
 
     signal state_d, state_q : State_type;
@@ -272,7 +273,7 @@ begin
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
-              state_d <= S_SW;
+              state_d <= S_SW1;
             else
               state_d <= S_Error;
             end if;
@@ -670,7 +671,12 @@ begin
 ---------- Instructions de sauvegarde en mémoire ----------
 
 
-          when S_SW =>
+          when S_SW1 =>
+            -- mem_dataout <- rs2
+            -- next state
+            state_d <= S_SW2
+
+          when S_SW2 =>
             -- calcul de rs1 + immI
             cmd.AD_Y_sel <= AD_Y_immI;
             cmd.AD_we <= '1';
