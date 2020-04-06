@@ -611,7 +611,7 @@ begin
 
 
           when S_BGE2 =>
-            if not status.JCOND then
+            if status.JCOND then
               -- PC <- PC + cst
               cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
               cmd.PC_sel <= PC_from_pc;
