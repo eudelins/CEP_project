@@ -686,7 +686,7 @@ begin
 
        
           when S_SW1 =>
-            -- calcul de rs1 + immI
+            -- AD <- rs1 + immI
             cmd.AD_Y_sel <= AD_Y_immI;
             cmd.AD_we <= '1';
             -- next state
@@ -694,7 +694,7 @@ begin
 
             
           when S_SW2 =>
-            -- mem_addr <- rs1 + immI
+            -- mem[AD] <- rs2
             cmd.ADDR_sel <= ADDR_from_ad;
             cmd.mem_ce <= '1';
             cmd.mem_we <= '1';
