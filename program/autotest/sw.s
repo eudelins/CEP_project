@@ -1,4 +1,8 @@
 # TAG = sw
+	.data
+
+.word 50
+
 	.text
 
   # le registre x0 contient toujours 0
