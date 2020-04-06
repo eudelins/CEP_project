@@ -7,7 +7,7 @@
   # PC vaut initialement 0x00001000
 
 label1:
-  lui x31, OxOO000
+  lui x31, 0x00000
 
 label2;
   lui x31, 0xfffff
@@ -21,6 +21,8 @@ auipc x31, 0      # x31 doit valoir PC + label2 = PC + Oxfffff
 
 	# max_cycle 50
 	# pout_start
+  # 00000000
+  # FFFFF000
 	# 00001004
   # 00001004
   # 0000100C
