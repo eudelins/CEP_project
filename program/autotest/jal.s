@@ -7,10 +7,10 @@
   # PC vaut initialement 0x00001000
 
 
+jal x31, label1   # x31 doit valoir PC + 4
+
 label1:
   lui x31, 0xff320
-
-jal x31, label1   # x31 doit valoir PC + 4
 
 
 	# max_cycle 50
