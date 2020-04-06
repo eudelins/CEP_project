@@ -58,7 +58,8 @@ architecture RTL of CPU_PC is
       S_LW2,
       S_LW3,
       S_SW1,
-      S_SW2
+      S_SW2,
+      S_JAL
       );
 
     signal state_d, state_q : State_type;
@@ -257,7 +258,9 @@ begin
               state_d <= S_BGE1;
             elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_BLT_BLTU1;
-            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
+             elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "1100011" then
+              state_d <= S_JAL;
+            elsif status.IR(6 downto 0) = "1101111" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
@@ -678,6 +681,22 @@ begin
             cmd.mem_we <= '0';
             -- next state
             state_d <= S_Fetch;
+
+
+            
+          when S_JAL =>
+            -- rd <- PC + 4
+            cmd.PC_X_sel <= PC_X_pc;
+            cmd.PC_Y_sel <= PC_Y_cst_x04;
+            cmd.DATA_sel <= DATA_from_pc;
+            cmd.RD_we <= '1';
+            -- PC <- PC + cst
+            cmd.TO_PC_Y_sel <= TO_PC_Y_immJ;
+            cmd.PC_sel <= PC_from_pc;
+            cmd.PC_we <= '1';
+            -- next state
+            state_d <= S_Pre_Fetch;
+
                       
 
             
