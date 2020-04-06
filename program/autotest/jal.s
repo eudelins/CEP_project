@@ -9,7 +9,7 @@
 label1:
   lui x31, 0x00000
 
-label2;
+label2:
   lui x31, 0xfffff
 
 jal x31, label1   # x31 doit valoir PC + 4
