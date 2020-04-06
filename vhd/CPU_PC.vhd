@@ -687,7 +687,7 @@ begin
        
           when S_SW1 =>
             -- AD <- rs1 + immI
-            cmd.AD_Y_sel <= AD_Y_immI;
+            cmd.AD_Y_sel <= AD_Y_immS;
             cmd.AD_we <= '1';
             -- next state
             state_d <= S_SW2;
