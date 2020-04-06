@@ -674,7 +674,7 @@ begin
           when S_SW1 =>
             -- mem_dataout <- rs2
             -- next state
-            state_d <= S_SW2
+            state_d <= S_SW2;
 
           when S_SW2 =>
             -- calcul de rs1 + immI
