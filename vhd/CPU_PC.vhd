@@ -654,13 +654,13 @@ begin
             -- Calcul de rs1 + immI
             cmd.AD_Y_sel <= AD_Y_immI;
             cmd.AD_we <= '1';
-            cmd.ADDR_sel <= ADDR_from_ad;
             -- next state
             state_d <= S_LW2;
 
             
           when S_LW2 =>
             -- lecture mem[ADDR]
+            cmd.ADDR_sel <= ADDR_from_ad;
             cmd.mem_ce <= '1';
             cmd.mem_we <= '0';
             -- next state
