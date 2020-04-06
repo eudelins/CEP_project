@@ -1,11 +1,15 @@
 # TAG = sw
+	.data
+
+mot : .word 50
+
 	.text
 
   # le registre x0 contient toujours 0
   # syntaxe: sw rs2, immS(rs1)
   # opération: mem[cst + rs1] <- rs2
 
-	addi x1, x0, 50
+	la x1, mot
   sw x0, 0(x1)
   lw x31, 0(x1)
 	lui x2, 0x0BCDE
