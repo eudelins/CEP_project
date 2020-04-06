@@ -671,23 +671,24 @@ begin
 ---------- Instructions de sauvegarde en mémoire ----------
 
 
+       
           when S_SW1 =>
-            -- mem_dataout <- rs2
-            -- next state
-            state_d <= S_SW2;
-
-          when S_SW2 =>
             -- calcul de rs1 + immI
             cmd.AD_Y_sel <= AD_Y_immI;
             cmd.AD_we <= '1';
             cmd.ADDR_sel <= ADDR_from_ad;
+            -- next state
+            state_d <= S_SW2;
+
+
+          when S_SW2 =>
+            -- mem_dataout <- rs2
             -- lecture mem[PC]
             cmd.ADDR_sel <= ADDR_from_pc;
             cmd.mem_ce <= '1';
-            cmd.mem_we <= '0';
+            cmd.mem_we <= '0
             -- next state
             state_d <= S_Fetch;
-
 
             
                        
