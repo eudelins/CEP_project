@@ -1,4 +1,9 @@
 # TAG = lw
+
+  .data
+
+mot : .word 50
+
 	.text
 
   # le registre x0 contient toujours 0
@@ -9,15 +14,13 @@
   lui x1, 1
   lw x31, 0(x1)
 
-  # sw x0, 0(x1)
-  # lw x31, 0(x1)
-  # 00000000
-  # lui x2, 0x0BCDE
-  # sw x2, 0(x1)
-  # 0BCDE000
+  la x1, mot
+  lui x2, 0x0BCDE
+  sw x2, 0(x1)
 
 
 	# max_cycle 50
 	# pout_start
   # 00000033
+  # 0BCDE000
   # pout_end
