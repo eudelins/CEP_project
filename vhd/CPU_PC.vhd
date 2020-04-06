@@ -654,6 +654,9 @@ begin
             cmd.AD_Y_sel <= AD_Y_immI;
             cmd.AD_we <= '1';
             cmd.ADDR_sel <= ADDR_from_ad;
+            -- lecture mem[ADDR]
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
             -- next state
             state_d <= S_LW2;
 
