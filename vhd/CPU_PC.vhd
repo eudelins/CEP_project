@@ -689,7 +689,7 @@ begin
             cmd.PC_X_sel <= PC_X_pc;
             cmd.PC_Y_sel <= PC_Y_cst_x04;
             cmd.DATA_sel <= DATA_from_pc;
-            cmd.RD_we <= '1';
+            cmd.RF_we <= '1';
             -- PC <- PC + cst
             cmd.TO_PC_Y_sel <= TO_PC_Y_immJ;
             cmd.PC_sel <= PC_from_pc;
