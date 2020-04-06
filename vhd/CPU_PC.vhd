@@ -689,12 +689,18 @@ begin
             -- calcul de rs1 + immI
             cmd.AD_Y_sel <= AD_Y_immI;
             cmd.AD_we <= '1';
-            cmd.ADDR_sel <= ADDR_from_ad;
             -- next state
             state_d <= S_SW2;
 
-
+            
           when S_SW2 =>
+            -- mem_addr <- rs1 + immI
+            cmd.ADDR_sel <= ADDR_from_ad;
+            -- next state
+            state_d <= S_SW3;
+
+
+          when S_SW3 =>
             -- mem_dataout <- rs2
             cmd.mem_ce <= '1';
             cmd.mem_we <= '1';
