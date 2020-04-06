@@ -659,7 +659,7 @@ begin
           when S_LW2 =>
             -- rd <- mem[rs1 + immI]
             cmd.RF_SIZE_sel <= RF_SIZE_word;
-            cmd.RF_SIGN_enable <= '1';
+            cmd.RF_SIGN_enable <= '0';
             cmd.DATA_sel <= DATA_from_mem;
             cmd.RF_we <= '1';
             -- next state
