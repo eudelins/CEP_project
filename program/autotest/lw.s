@@ -5,7 +5,7 @@
   # syntaxe: lw rd, imm(rs1)
   # opération: rd <- mem[rs1 + immI]
 
-  # addi x1, x0, 50
+  addi x1, x0, 50
   # sw x0, 0(x1)
   # lw x31, 0(x1)
   # 00000000

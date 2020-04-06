@@ -690,6 +690,8 @@ begin
 
           when S_SW2 =>
             -- mem_dataout <- rs2
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '1';
             -- lecture mem[PC]
             cmd.ADDR_sel <= ADDR_from_pc;
             cmd.mem_ce <= '1';
