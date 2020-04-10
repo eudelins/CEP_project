@@ -33,14 +33,8 @@ architecture RTL of CPU_PC is
       S_ADD,
       S_AUIPC,
       S_SLL,
-      S_BEQ1,
-      S_BEQ2,
-      S_BNE1,
-      S_BNE2,
-      S_BLT_BLTU1,
-      S_BLT_BLTU2,
-      S_BGE1,
-      S_BGE2,
+      S_SAUT1,
+      S_SAUT2,
       S_SLT,
       S_AND,
       S_ORI,
@@ -249,17 +243,17 @@ begin
               cmd.PC_we <= '1';
               state_d <= S_SLLI;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_BEQ1;
+              state_d <= S_SAUT1;
             elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_BNE1;
+              state_d <= S_SAUT1;
             elsif status.IR(14 downto 12) = "100" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_BLT_BLTU1;
+              state_d <= S_SAUT1;
             elsif status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_BGE1;
+              state_d <= S_SAUT1;
             elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_BLT_BLTU1;
+              state_d <= S_SAUT1;
             elsif status.IR(6 downto 0) = "1101111" then
-              state_d <= S_JAL;
+              state_d <= S_SAUT1;
             elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
@@ -552,14 +546,14 @@ begin
 
 ---------- Instructions de saut ----------
 
-          when S_BEQ1 =>
+          when S_SAUT1 =>
               -- calcul de status.JCOND
               cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
               -- next state
               state_d <= S_BEQ2;
 
 
-          when S_BEQ2 =>
+          when S_SAUT2 =>
             if status.JCOND then
               -- PC <- PC + cst
               cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
@@ -574,79 +568,6 @@ begin
             -- next state
             state_d <= S_Pre_Fetch;
             
-
-          when S_BNE1 =>
-              -- calcul de status.JCOND
-              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
-              -- next state
-              state_d <= S_BEQ2;
-
-
-          when S_BNE2 =>
-            if not status.JCOND then
-              -- PC <- PC + cst
-              cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
-              cmd.PC_sel <= PC_from_pc;
-              cmd.PC_we <= '1';
-            else
-              -- PC <- PC + 4
-              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
-              cmd.PC_sel <= PC_from_pc;
-              cmd.PC_we <= '1';
-            end if;
-            -- next state
-            state_d <= S_Pre_Fetch;
-
-
-          
-          when S_BLT_BLTU1 =>
-              -- calcul de SLT
-              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
-              -- next state
-              state_d <= S_BLT_BLTU2;
-
-
-          when S_BLT_BLTU2 =>
-            if status.JCOND then
-              -- PC <- PC + cst
-              cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
-              cmd.PC_sel <= PC_from_pc;
-              cmd.PC_we <= '1';
-            else
-              -- PC <- PC + 4
-              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
-              cmd.PC_sel <= PC_from_pc;
-              cmd.PC_we <= '1';
-            end if;
-            -- next state
-            state_d <= S_Pre_Fetch;
-
-
-
-          when S_BGE1 =>
-              -- calcul de SLT
-              cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
-              -- next state
-              state_d <= S_BGE2;
-
-
-          when S_BGE2 =>
-            if status.JCOND then
-              -- PC <- PC + cst
-              cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
-              cmd.PC_sel <= PC_from_pc;
-              cmd.PC_we <= '1';
-            else
-              -- PC <- PC + 4
-              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
-              cmd.PC_sel <= PC_from_pc;
-              cmd.PC_we <= '1';
-            end if;
-            -- next state
-            state_d <= S_Pre_Fetch;
-
-
-
             
             
             
@@ -684,20 +605,6 @@ begin
 
 
             
-          when S_JAL =>
-            -- rd <- PC + 4
-            cmd.PC_X_sel <= PC_X_pc;
-            cmd.PC_Y_sel <= PC_Y_cst_x04;
-            cmd.DATA_sel <= DATA_from_pc;
-            cmd.RF_we <= '1';
-            -- PC <- PC + cst
-            cmd.TO_PC_Y_sel <= TO_PC_Y_immJ;
-            cmd.PC_sel <= PC_from_pc;
-            cmd.PC_we <= '1';
-            -- next state
-            state_d <= S_Pre_Fetch;
-
-                      
 
             
 ---------- Instructions de sauvegarde en mémoire ----------
