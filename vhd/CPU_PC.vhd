@@ -54,7 +54,8 @@ architecture RTL of CPU_PC is
       S_SW1,
       S_SW2,
       S_JAL,
-      S_JALR
+      S_JALR,
+      S_BGEU
       );
 
     signal state_d, state_q : State_type;
@@ -253,6 +254,8 @@ begin
               state_d <= S_SAUT;
             elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "1100011" then
               state_d <= S_SAUT;
+            elsif status.IR(14 downto 12) = "111" and status.IR(6 downto 0) = "1100011" then
+              state_d <= S_SAUT;  -- S_BGEU
             elsif status.IR(6 downto 0) = "1101111" then
               state_d <= S_JAL;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "1100111" then
