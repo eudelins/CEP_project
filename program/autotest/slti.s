@@ -1,22 +1,19 @@
-# TAG = slt
+# TAG = slti
 	.text
 
   	# le registre x0 contient toujours 0
-  	# syntaxe: slt rd, rs1, rs2
+  	# syntaxe: slti rd, rs1, imm
 	# rs1 et rs2 continnent des valeurs codées sur 32 bits
 
 
 	addi x1, x0, 354
-	addi x2, x0, 24
-  	slt x31, x1, x2  # test si rs1 > rs2
+  	slti x31, x1, -24  # test si rs1 > rs2
 
 	addi x1, x0, 123
-	addi x2, x0, 123
-  	slt x31, x1, x2  # test si rs1 = rs2
+  	slti x31, x1, 123  # test si rs1 = rs2
 
 	addi x1, x0, 67
-	addi x2, x0, 298
- 	slt x31, x1, x2  # test si rs1 < rs2
+ 	slt x31, x1, 298  # test si rs1 < rs2
 
 	# max_cycle 50
 	# pout_start
