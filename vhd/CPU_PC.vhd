@@ -550,7 +550,7 @@ begin
               -- calcul de status.JCOND
               cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
               -- next state
-              state_d <= S_BEQ2;
+              state_d <= S_SAUT2;
 
 
           when S_SAUT2 =>
