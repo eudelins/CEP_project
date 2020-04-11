@@ -23,6 +23,6 @@ label1:
 
 	# max_cycle 50
 	# pout_start
-	# 000010OC
+	# 00001008
     # 23E5A000
 	# pout_end
