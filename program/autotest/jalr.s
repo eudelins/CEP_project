@@ -7,7 +7,7 @@
   # PC vaut initialement 0x00001000
 
 
-jal x31, 16(x0)   # x31 doit valoir PC + 4
+jalr x31, 16(x0)   # x31 doit valoir PC + 4
 auipc x31, 0
 
 
