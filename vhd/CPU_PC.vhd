@@ -254,13 +254,13 @@ begin
               state_d <= S_SAUT;
             elsif status.IR(6 downto 0) = "1101111" then
               state_d <= S_JAL;
-            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0010011" then
-              -- PC <- PC + 4
-              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
-              cmd.PC_sel <= PC_from_pc;
-              cmd.PC_we <= '1';
-              state_d <= S_SLTI_SLTIU;
-            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
+            elsif status.IR(14 downto 13) = "01" and status.IR(6 downto 0) = "0010011" then
+                -- PC <- PC + 4
+                cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+                cmd.PC_sel <= PC_from_pc;
+                cmd.PC_we <= '1';
+                state_d <= S_SLTI_SLTIU;
+            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 13) = "01" and status.IR(6 downto 0) = "0110011" then
                 -- PC <- PC + 4
                 cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
                 cmd.PC_sel <= PC_from_pc;
