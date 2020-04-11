@@ -549,11 +549,11 @@ begin
           when S_SAUT1 =>
               -- calcul de status.JCOND
               cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
-              -- next state
-              state_d <= S_SAUT2;
+          --     -- next state
+          --     state_d <= S_SAUT2;
 
 
-          when S_SAUT2 =>
+          -- when S_SAUT2 =>
             if status.JCOND then
               -- PC <- PC + cst
               cmd.TO_PC_Y_sel <= TO_PC_Y_immB;

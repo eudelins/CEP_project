@@ -22,15 +22,18 @@ architecture RTL of CPU_CND is
   signal sous, rs1_33, rs2_33 : signed(32 downto 0);
   signal  extension_signe, jc_final, z, s : std_logic;
   
-begin
+  begin
+  extension_signe <= ((not IR(12)) and (not IR(6))) or (IR(6) and (not IR(13)));
+  
   rs1_op <= signed(rs1);
   rs2_op <= signed(alu_y);
-  extension_signe <= ((not IR(12)) and (not IR(6))) or (IR(6) and (not IR(13)));
   rs1_33 <= rs1_op(31) & rs1_op when (extension_signe = '1') else '0' & rs1_op;
   rs2_33 <= rs2_op(31) & rs2_op when (extension_signe = '1') else '0' & rs2_op;
   sous <= rs1_33 - rs2_33;
-  s <= '1' when (sous(32) = '1') else '0';
+  
+  s <= sous(32);
   z <= '1' when (sous = 0) else '0';
+  
   jc_final <= ((not IR(14)) and (IR(12) xor z))  or ((IR(12) xor s) and IR(14));
   jcond <= jc_final;
   slt <= s;
