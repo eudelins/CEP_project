@@ -33,9 +33,9 @@ architecture RTL of CPU_PC is
       S_ADD,
       S_AUIPC,
       S_SLL,
-      S_SAUT1,
-      S_SAUT2,
-      S_SLT,
+      S_SAUT,
+      S_SLT_SLTU,
+      S_SLTI_SLTIU,
       S_AND,
       S_ORI,
       S_OR,
@@ -243,23 +243,29 @@ begin
               cmd.PC_we <= '1';
               state_d <= S_SLLI;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_SAUT1;
+              state_d <= S_SAUT;
             elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_SAUT1;
+              state_d <= S_SAUT;
             elsif status.IR(14 downto 12) = "100" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_SAUT1;
+              state_d <= S_SAUT;
             elsif status.IR(14 downto 12) = "101" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_SAUT1;
+              state_d <= S_SAUT;
             elsif status.IR(14 downto 12) = "110" and status.IR(6 downto 0) = "1100011" then
-              state_d <= S_SAUT1;
+              state_d <= S_SAUT;
             elsif status.IR(6 downto 0) = "1101111" then
               state_d <= S_JAL;
-            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
+            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0010011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
-              state_d <= S_SLT;
+              state_d <= S_SLTI_SLTIU;
+            elsif status.IR(31 downto 25) = "0000000" and status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0110011" then
+                -- PC <- PC + 4
+                cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+                cmd.PC_sel <= PC_from_pc;
+                cmd.PC_we <= '1';
+                state_d <= S_SLT_SLTU;
             elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0000011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
@@ -443,8 +449,7 @@ begin
 
             
             
-
-         when S_SLT =>
+          when S_SLT_SLTU =>
               -- si rs1 < rs2, rd <- 0³¹||1
               -- si rs1 >= rs2, rd <- 0³²
               cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
@@ -458,7 +463,21 @@ begin
               state_d <= S_Fetch;
 
 
-         when S_AND =>
+          when S_SLTI_SLTIU =>
+              -- si rs1 < rs2, rd <- 0³¹||1
+              -- si rs1 >= rs2, rd <- 0³²
+              cmd.ALU_Y_sel <= ALU_Y_immI;
+              cmd.DATA_sel <= DATA_from_slt;
+              cmd.RF_we <= '1';
+              -- lecture mem[PC]
+              cmd.ADDR_sel <= ADDR_from_pc;
+              cmd.mem_ce <= '1';
+              cmd.mem_we <= '0';
+              -- next state
+              state_d <= S_Fetch;
+
+
+          when S_AND =>
               -- rd <- rs1 and rs2
               cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
               cmd.LOGICAL_op <= LOGICAL_and;
@@ -546,14 +565,9 @@ begin
 
 ---------- Instructions de saut ----------
 
-          when S_SAUT1 =>
+          when S_SAUT =>
               -- calcul de status.JCOND
               cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
-          --     -- next state
-          --     state_d <= S_SAUT2;
-
-
-          -- when S_SAUT2 =>
             if status.JCOND then
               -- PC <- PC + cst
               cmd.TO_PC_Y_sel <= TO_PC_Y_immB;
