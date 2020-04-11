@@ -30,3 +30,4 @@ LW
 SW
 JAL
 JALR
+BGEU
