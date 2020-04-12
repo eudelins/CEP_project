@@ -13,7 +13,7 @@ mot : .word 50
     lw x31, 0(x1)
 	lui x2, 0x0BCDE
 	sh x2, 0(x1)
-	lh x31, 0(x1)
+	lhu x31, 0(x1)
 
 
 	# max_cycle 50
