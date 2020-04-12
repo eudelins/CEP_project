@@ -791,7 +791,7 @@ begin
             cmd.AD_Y_sel <= AD_Y_immS;
             cmd.AD_we <= '1';
             -- next state
-            state_d <= S_SW2;
+            state_d <= S_SAUVEGARDE2;
 
 
           when S_SAUVEGARDE2 =>
