@@ -51,6 +51,9 @@ architecture RTL of CPU_PC is
       S_LW1,
       S_LW2,
       S_LW3,
+      S_LB1,
+      S_LB2,
+      S_LB3,
       S_LBU1,
       S_LBU2,
       S_LBU3,
@@ -129,7 +132,7 @@ begin
 
         case state_q is
           when S_Error =>
-            -- Etat transitoire en cas d'instruction non reconnue 
+            -- Etat transitoire en cas d'instruction non reconnue
             -- Aucune action
             state_d <= S_Init;
 
@@ -302,10 +305,16 @@ begin
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_SW1;
+            elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "0000011" then
+              -- PC <- PC + 4
+              cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
+              cmd.PC_sel <= PC_from_pc;
+              cmd.PC_we <= '1';
+              state_d <= S_LB1;
             else
               state_d <= S_Error;
             end if;
-              
+
 
                 -- Décodage effectif des instructions,
                 -- à compléter par vos soins
@@ -338,7 +347,7 @@ begin
               cmd.PC_we <= '1';
               -- next state
               state_d <= S_Pre_Fetch;
-            
+
 
 ---------- Instructions arithmétiques et logiques ----------
 
@@ -382,8 +391,8 @@ begin
             cmd.mem_we <= '0';
             -- next state
             state_d <= S_Fetch;
-            
-            
+
+
 
           when S_SLL =>
               -- rd <- rs1 << rs2(0:4)
@@ -457,7 +466,7 @@ begin
             state_d <= S_Fetch;
 
 
-            
+
           when S_SRAI =>
             -- rd <- rs1 >> shamt
             cmd.SHIFTER_Y_sel <= SHIFTER_Y_ir_sh;
@@ -471,8 +480,8 @@ begin
             -- next state
             state_d <= S_Fetch;
 
-            
-            
+
+
           when S_SLT_SLTU =>
               -- si rs1 < rs2, rd <- 0³¹||1
               -- si rs1 >= rs2, rd <- 0³²
@@ -526,10 +535,10 @@ begin
             cmd.mem_ce <= '1';
             cmd.mem_we <= '0';
             -- next state
-            state_d <= S_Fetch;                         
-            
+            state_d <= S_Fetch;
 
-              
+
+
           when S_OR =>
             -- rd <- rs1 or rs2
             cmd.ALU_Y_sel <= ALU_Y_rf_rs2;
@@ -585,7 +594,7 @@ begin
             cmd.mem_we <= '0';
             -- next state
             state_d <= S_Fetch;
-            
+
 
 ---------- Instructions de saut ----------
 
@@ -620,7 +629,7 @@ begin
             -- next state
             state_d <= S_Pre_Fetch;
 
-          
+
           when S_JALR =>
             -- rd <- PC + 4
             cmd.PC_X_sel <= PC_X_pc;
@@ -635,11 +644,11 @@ begin
             -- next state
             state_d <= S_Pre_Fetch;
 
-                      
 
-            
-            
-            
+
+
+
+
 ---------- Instructions de chargement à partir de la mémoire ----------
 
 
@@ -650,7 +659,7 @@ begin
             -- next state
             state_d <= S_LW2;
 
-            
+
           when S_LW2 =>
             -- lecture mem[ADDR]
             cmd.ADDR_sel <= ADDR_from_ad;
@@ -672,6 +681,34 @@ begin
             -- next state
             state_d <= S_Fetch;
 
+          when S_LB1 =>
+            -- calcul de l'@ qui vaut immI + rs1
+            cmd.AD_Y_sel <= AD_Y_immI;
+            cmd.AD_we <= '1';
+            -- next state
+            state_d <= S_LB2;
+
+          when S_LB2 =>
+            -- lecture de la mémoire à l'@
+            cmd.ADDR_sel <= ADDR_from_ad;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_LB3;
+
+          when S_LB3 =>
+            -- rd <- mem[@]
+            cmd.RF_SIZE_sel <= RF_SIZE_byte;
+            cmd.RF_SIGN_enable <= '1';
+            cmd.DATA_sel <= DATA_from_mem;
+            cmd.RF_we <= '1';
+            -- lecture de la mémoire à PC
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
+
 
           when S_LBU1 =>
             -- Calcul de rs1 + immI
@@ -680,7 +717,7 @@ begin
             -- next state
             state_d <= S_LBU2;
 
-            
+
           when S_LBU2 =>
             -- lecture mem[ADDR]
             cmd.ADDR_sel <= ADDR_from_ad;
@@ -710,7 +747,7 @@ begin
             -- next state
             state_d <= S_LH2;
 
-            
+
           when S_LH2 =>
             -- lecture mem[ADDR]
             cmd.ADDR_sel <= ADDR_from_ad;
@@ -733,11 +770,11 @@ begin
             state_d <= S_Fetch;
 
 
-            
+
 ---------- Instructions de sauvegarde en mémoire ----------
 
 
-       
+
           when S_SW1 =>
             -- AD <- rs1 + immI
             cmd.AD_Y_sel <= AD_Y_immS;
@@ -745,7 +782,7 @@ begin
             -- next state
             state_d <= S_SW2;
 
-            
+
           when S_SW2 =>
             -- mem[AD] <- rs2
             cmd.ADDR_sel <= ADDR_from_ad;
@@ -754,19 +791,19 @@ begin
             -- next state
             state_d <= S_Pre_Fetch;
 
-            
-                       
-            
+
+
+
 ---------- Instructions d'accès aux CSR ----------
 
-          
 
-          
 
-          
-              
 
-              
+
+
+
+
+
           when others => null;
         end case;
 
