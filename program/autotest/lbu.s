@@ -23,9 +23,14 @@ mot : .word 50
   sw x2, 0(x1)
   lbu x31, 0(x1)
 
+  addi x2, x0, -128
+  sw x2, 0(x1)
+  lbu x31, 0(x1)
+
   # max_cycle 50
   # pout_start
   # 00000033
   # 00000000
   # 00000010
+  # 00000080
   # pout_end
