@@ -14,7 +14,7 @@ mot : .word 50
 	lui x2, 0x0BCDE
     addi x2, x2, 5
 	sb x2, 0(x1)
-	lw x31, 0(x1)
+	lb x31, 0(x1)
 
 
 	# max_cycle 50
