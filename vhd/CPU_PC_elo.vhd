@@ -663,23 +663,33 @@ begin
 
 
           when S_LB1 =>
-              -- calcul de l'@ qui vaut immI + rs1
-              cmd.AD_Y_sel <= AD_Y_immI;
-              cmd.AD_we <= '1';
-              ADDR_sel <= ADDR_from_ad;
-              cmd.mem_ce <= '1';
-              cmd.mem_we <= '1';
-              -- next state
-              state_d <= S_LB2;
-
+            -- calcul de l'@ qui vaut immI + rs1
+            cmd.AD_Y_sel <= AD_Y_immI;
+            cmd.AD_we <= '1';
+            -- next state
+            state_d <= S_LB2;
+          
           when S_LB2 =>
-              -- rd <- mem[@]
-              cmd.RF_SIZE_sel <= RF_SIZE_word;
-              cmd.RF_SIGN_enable <= '1';
-              DATA_sel <= DATA_from_mem;
-              RF_we <= '1';
-              -- next state
-              state_d <= S_Pre_Fetch;
+            -- lecture de la mémoire à l'@
+            cmd.ADDR_sel <= ADDR_from_ad;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_LB3;
+
+
+          when S_LB3 =>
+            -- rd <- mem[@]
+            cmd.RF_SIZE_sel <= RF_SIZE_byte;
+            cmd.RF_SIGN_enable <= '1';
+            DATA_sel <= DATA_from_mem;
+            RF_we <= '1';
+            -- lecture de la mémoire à PC
+            cmd.ADDR_sel <= ADDR_from_pc;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '0';
+            -- next state
+            state_d <= S_Fetch;
 
 
             
