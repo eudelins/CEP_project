@@ -792,7 +792,7 @@ begin
 
           when S_LHU1 =>
             -- calcul de l'@ qui vaut immI + rs1
-            cmd.AD_Y_select <= AD_Y_immI;
+            cmd.AD_Y_sel <= AD_Y_immI;
             cmd.AD_we <= '1';
             -- next state
             state_d <= S_LHU2;
