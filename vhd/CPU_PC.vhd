@@ -281,7 +281,7 @@ begin
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
               state_d <= S_LW1;
-            elsif status.IR(14 downto 12) = "010" and status.IR(6 downto 0) = "0000011" then
+            elsif status.IR(14 downto 12) = "100" and status.IR(6 downto 0) = "0000011" then
                 -- PC <- PC + 4
                 cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
                 cmd.PC_sel <= PC_from_pc;
