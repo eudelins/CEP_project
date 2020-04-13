@@ -63,8 +63,12 @@ architecture RTL of CPU_PC is
       S_LHU1,
       S_LHU2,
       S_LHU3,
-      S_SAUVEGARDE1,
-      S_SAUVEGARDE2,
+      S_SW1,
+      S_SW2,
+      S_SB1,
+      S_SB2,
+      S_SH1,
+      S_SH2,
       S_JAL,
       S_JALR
       );
@@ -312,19 +316,19 @@ begin
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
-              state_d <= S_SAUVEGARDE1;
+              state_d <= S_SW1;
             elsif status.IR(14 downto 12) = "001" and status.IR(6 downto 0) = "0100011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
-              state_d <= S_SAUVEGARDE1;
+              state_d <= S_SH1;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "0100011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
               cmd.PC_sel <= PC_from_pc;
               cmd.PC_we <= '1';
-              state_d <= S_SAUVEGARDE1;
+              state_d <= S_SB1;
             elsif status.IR(14 downto 12) = "000" and status.IR(6 downto 0) = "0000011" then
               -- PC <- PC + 4
               cmd.TO_PC_Y_sel <= TO_PC_Y_cst_x04;
@@ -823,21 +827,60 @@ begin
 
 
 
-          when S_SAUVEGARDE1 =>
+          when S_SW1 =>
             -- AD <- rs1 + immI
             cmd.AD_Y_sel <= AD_Y_immS;
             cmd.AD_we <= '1';
             -- next state
-            state_d <= S_SAUVEGARDE2;
+            state_d <= S_SW2;
 
 
-          when S_SAUVEGARDE2 =>
+          when S_SW2 =>
             -- mem[AD] <- rs2
+            cmd.RF_SIZE_sel <= RF_SIZE_word;
             cmd.ADDR_sel <= ADDR_from_ad;
             cmd.mem_ce <= '1';
             cmd.mem_we <= '1';
             -- next state
             state_d <= S_Pre_Fetch;
+
+
+          when S_SB1 =>
+            -- AD <- rs1 + immI
+            cmd.AD_Y_sel <= AD_Y_immS;
+            cmd.AD_we <= '1';
+            -- next state
+            state_d <= S_SB2;
+
+
+          when S_SB2 =>
+            -- mem[AD] <- rs2
+            cmd.RF_SIZE_sel <= RF_SIZE_byte;
+            cmd.ADDR_sel <= ADDR_from_ad;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '1';
+            -- next state
+            state_d <= S_Pre_Fetch;
+
+
+
+          when S_SH1 =>
+            -- AD <- rs1 + immI
+            cmd.AD_Y_sel <= AD_Y_immS;
+            cmd.AD_we <= '1';
+            -- next state
+            state_d <= S_SH2;
+
+
+          when S_SH2 =>
+            -- mem[AD] <- rs2
+            cmd.RF_SIZE_sel <= RF_SIZE_half;
+            cmd.ADDR_sel <= ADDR_from_ad;
+            cmd.mem_ce <= '1';
+            cmd.mem_we <= '1';
+            -- next state
+            state_d <= S_Pre_Fetch;
+
 
 
 
