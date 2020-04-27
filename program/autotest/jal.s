@@ -8,6 +8,7 @@
 
 
 jal x31, label1   # x31 doit valoir PC + 4
+lui x31, 0xfffff
 
 label1:
   lui x31, 0xff320
