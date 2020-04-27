@@ -1,8 +1,4 @@
 # TAG = jalr
-  .data
-
-mot : .word 50
-
 	.text
 
 
@@ -11,14 +7,17 @@ mot : .word 50
   # opérations: rd <- PC + 4, PC <- PC + 4
   # PC vaut initialement 0x00001000
 
-la x3, mot
-addi x1, x0, -77  # stock l'instruction add x31, x0, x0, dans x1
+la x3, label2
 sw x1, 0(x3)  # stock l'instruction add x2, x0, x0, dans mot
 jalr x31, 0(x1)   # x31 doit valoir PC + 4
 
+label1:
+  lui x31, 0xfffff
 
+label2:
+  lui x31, 0xffff0
 	# max_cycle 50
 	# pout_start
-	# 00001010
-  # 00000000
+	# 0000100C
+  # FFFF0000
 	# pout_end
