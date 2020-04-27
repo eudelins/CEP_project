@@ -12,7 +12,7 @@ mot : .word 50
   # PC vaut initialement 0x00001000
 
 la x3, mot
-addi x1, x0, 4019  # stock l'instruction add x31, x0, x0, dans x1
+addi x1, x0, -77  # stock l'instruction add x31, x0, x0, dans x1
 sw x1, 0(x3)  # stock l'instruction add x2, x0, x0, dans mot
 jalr x31, 0(x1)   # x31 doit valoir PC + 4
 
