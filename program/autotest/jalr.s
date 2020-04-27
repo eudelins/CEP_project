@@ -18,6 +18,6 @@ label2:
 	
   # max_cycle 50
 	# pout_start
-	# 0000100C
+	# 00001008
   # FFFF0000
 	# pout_end
